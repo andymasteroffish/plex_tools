@@ -21,11 +21,13 @@ It can create a playlist with the top 100 (or however many you'd like) songs.
 
 I don't think it factors in which user played the song, so if you have multiple people streaming from your library you may need to fiddle with the file.
 
+If you have it make a playlist, the new playlist will just appear in your playlist tab in Plex. If you already had the page open you will have to refresh.
+
 ## Usage
 
 `python3 most_played.py -url PLEX_URL -token YOUR_TOKEN -playlist 100 -date 22/01/01 -print`
 
-This will get your top songs played since Jan 1 2022. A playlist will be made with the 100 most played songs. Since `-print` is included, all the songs will also be printed to the console
+This will get your top songs played since Jan 1 2022. A playlist will be made with the 100 most played songs. Since `-print` is included, all the songs will also be printed to the console.
 
 ## Arguments
 
