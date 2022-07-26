@@ -49,6 +49,8 @@ Tool for reading a text file and attempting to create a playlist that matches by
 
 I made this to grab my playlists from Spotify and recreate them in my Plex library.
 
+This does not add music to your library. It only makes a playlist from the music you already have.
+
 ## Usage
 
 `python3 import_playlist.py -url PLEX_URL -t YOUR_TOKEN -i sample_playlist.txt -n 'My Good Tunes'`
@@ -81,8 +83,10 @@ If you want to use a different separator character, you can edit the script at t
 
 ## Exact Match
 
-If exact match is off (default) the name of the song is used and if there are no exact matches with the artist and album name for that sound, it finds the closest song with the same name. In my sample playlist txt file, Whip It has the album "Freedom Of Choice (Remaster)" but in my library that album is called "Freedom Of Choice". With exact match on, it will not find it. With exact match off it will.
+If exact match is off (default) the name of the song is used to search and if there are no exact matches with the artist and album name for that song, it finds the song in your library that has the most matches (for instance song and album name match but the artist doesn't). In my sample playlist txt file, Whip It has the album "Freedom Of Choice (Remaster)" but in my library that album is called "Freedom Of Choice". With exact match on, it will not find it. With exact match off it will.
 
-Sometimes with exact match off several songs seem equally good. In this case, all of those songs are added to the playlist but a warning is given in the console so you can remove them.
+Sometimes with exact match off several songs seem equally good. In this case, all of those songs are added to the playlist but a warning is given in the console so you can remove them. This is surprisingly rare even for a very large library.
 
 Exact match is useful if you made the text file from files in your library. If you are importing from something like Spotify, you probably want to leave it off because there may be small differences in the way things are labeled.
+
+I'm sure the matching could be improved if you want to get in the guts of this script.
