@@ -5,7 +5,7 @@ These are things I wrote for fun and they are definitely imperfect. Python is no
 
 This is my way of letting you know that these scripts are janky as hell. Be aware that there is pretty much no error handling here, so things might break.
 
-Huge thanks to the folks maintaining [Python-PlexAPI](https://python-plexapi.readthedocs.io/en/latest/introduction.html)!
+Huge thanks to the folks maintaining [Python-PlexAPI](https://python-plexapi.readthedocs.io/en/latest/introduction.html) & to [JonnyWong16](https://gist.github.com/JonnyWong16) for [this script](https://gist.github.com/JonnyWong16/2607abf0e3431b6f133861bbe1bb694e) that is the basis for my tools!
 
 ## Finding your Plex token
 
@@ -45,8 +45,44 @@ There are a bunch of arguments. Only `-token` is strictly necessary, although it
 
 # Import Playlist (import_playlist.py)
 
-(coming soon)
-
 Tool for reading a text file and attempting to create a playlist that matches by searching for the songs in your library.
 
-I made this to grab my playlists from Spotify and recreate them in my Plex library
+I made this to grab my playlists from Spotify and recreate them in my Plex library.
+
+## Usage
+
+`python3 import_playlist.py -url PLEX_URL -t YOUR_TOKEN -i sample_playlist.txt -n 'My Good Tunes'`
+
+This will go through the songs in sample_playlist.txt and make a playlist called My Good Tunes that includes the best match for each song.
+
+## Arguments
+
+You must provide a Plex token and a txt file.
+
+| Argument | Alt | Description | Default |
+|--|--|--|--|
+| -url | -u | Plex URL | http://localhost:32400 |
+| -token | -t | Your Plex token | none (you need this) |
+| -input | -i | Txt file to pull from | none (you need this) |
+| -name | -n | Name for the playlist | "New Playlist" |
+| -exact | -e | Turns on exact match if present | False|
+
+Don't forget to put quotes around the playlist name if it includes spaces.
+
+## Generating the Txt File
+
+You can use [this tool](https://www.spotlistr.com/export/spotify-playlist) to get a text file for a Spotify playlist. Make sure to check the box for "album name" and set the separator to "|". Then you can just copy/paste the text into a txt file.
+
+There should be one song per line and each line should follow this pattern: SONG | ARTIST | ALBUM
+
+Take a look at sample_playlist.txt for reference.
+
+If you want to use a different separator character, you can edit the script at the start of main().
+
+## Exact Match
+
+If exact match is off (default) the name of the song is used and if there are no exact matches with the artist and album name for that sound, it finds the closest song with the same name. In my sample playlist txt file, Whip It has the album "Freedom Of Choice (Remaster)" but in my library that album is called "Freedom Of Choice". With exact match on, it will not find it. With exact match off it will.
+
+Sometimes with exact match off several songs seem equally good. In this case, all of those songs are added to the playlist but a warning is given in the console so you can remove them.
+
+Exact match is useful if you made the text file from files in your library. If you are importing from something like Spotify, you probably want to leave it off because there may be small differences in the way things are labeled.
