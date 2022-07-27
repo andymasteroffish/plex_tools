@@ -79,7 +79,7 @@ There should be one song per line and each line should follow this pattern: SONG
 
 Take a look at sample_playlist.txt for reference.
 
-If you want to use a different separator character, you can edit the script at the start of main().
+If you want to use a different separator character, you can edit the script at the start of main(). I avoid using a comma because many song titles include this character.
 
 ## Exact Match
 
