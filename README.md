@@ -17,17 +17,19 @@ All of these tools require you to know the URL of your Plex server as well as yo
 
 This script tries to emulate the Spotify Wrapped playlist. It takes a given start date and figures out which songs in your library got the most plays during that time.
 
-It can create a playlist with the top 100 (or however many you'd like) songs.
+It can create a playlist with the top 100 (or however many you'd like) songs. It can also print out your top 10 artists by duration.
 
 I don't think it factors in which user played the song, so if you have multiple people streaming from your library you may need to fiddle with the file.
 
 If you have it make a playlist, the new playlist will just appear in your playlist tab in Plex. If you already had the page open you will have to refresh.
 
+It will take a while to count up all of your plays for the year (could easily be 10 minutes), so give it some time if you're doing a full year. At some point I should optimize this at all.
+
 ## Usage
 
 `python3 most_played.py -url PLEX_URL -token YOUR_TOKEN -playlist 100 -date 22/01/01 -print`
 
-This will get your top songs played since Jan 1 2022. A playlist will be made with the 100 most played songs. Since `-print` is included, all the songs and play counts will also be printed to the console.
+This will get your top songs played since Jan 1 2022. A playlist will be made with the 100 most played songs. Since `-print` is included, all the songs and play counts will also be printed to the console along with the 10 most played artists.
 
 ## Arguments
 
@@ -39,7 +41,7 @@ There are a bunch of arguments. Only `-token` is strictly necessary, although it
 | -token | -t | Your Plex token | none (you need this) |
 | -playlist | -p | Makes a playlist of the given length | False |
 | -playlist_name | -n | Name for the playlist | "Top Songs [YEAR]" |
-| -date | -d | Start date. Must be in the format YEAR/MONTH/DAY | one year prior to today's date|
+| -date | -d | Start date. Must be in the format YEAR/MONTH/DAY (year should only have 2 digits)| one year prior to today's date|
 | -print | n/a | Prints all the info to the console | False |
 
 

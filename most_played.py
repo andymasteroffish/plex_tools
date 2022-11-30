@@ -21,13 +21,20 @@ import sys
 
 
 class SongInfo:
-    def __init__(self, id, title, album, artist, raw_info):
+    def __init__(self, id, title, album, artist, duration, raw_info):
         self.id = id
         self.title = title
         self.album = album
         self.artist = artist
+        self.duration = duration
         self.raw_info = raw_info
         self.play_count = 1
+
+class ArtistInfo:
+    def __init__(self, name):
+        self.name = name
+        self.play_count = 0
+        self.total_duration = 0
 
 
 def main():
@@ -94,6 +101,7 @@ def main():
 
 
     all_songs = []
+    all_artists = []
     playlist_test = []
 
     #default name if the playlist name is still blank
@@ -107,6 +115,7 @@ def main():
     music = plex.library.section('Music')
     history = music.history(9999999, start_datetime)
 
+    print("tallying... (this might take a while)")
     #check each item in the history
     for item in history:
         # check if there is a match in our list
@@ -118,18 +127,63 @@ def main():
 
         #make a new entry if there were no matches
         if match_found == False:
-            all_songs.append( SongInfo(item.ratingKey, item.title, item.parentTitle, item.grandparentTitle, item))
+            all_songs.append( SongInfo(item.ratingKey, item.title, item.parentTitle, item.grandparentTitle, item.duration, item))
             playlist_test.append(item)
+
+        #check for the artist
+        artist_found = False
+        for artist in all_artists:
+            if artist.name == item.grandparentTitle:
+                #sometimes duration is a bad value. we want to skip anything that is not an int
+                if type(item.duration) == type(1):
+                    #print("   add to artist ",item.grandparentTitle)
+                    artist.play_count += 1
+                    artist.total_duration += item.duration
+                    artist_found = True
+                # else:
+                #     print("  no duraiton value for ",item.title)
+                
+
+        #make a new entry if we did not find the artist
+        if artist_found == False:
+            #print("create artist ",item.grandparentTitle)
+            all_artists.append( ArtistInfo(item.grandparentTitle))
+
+    print("sorting...")
+
 
 
     #sort
     all_songs.sort(key=lambda x: x.play_count, reverse=True)
+    all_artists.sort(key=lambda x: x.total_duration, reverse=True)
 
     #spit it to the console if we want to
     if PRINT_INFO:
-        print('songs:')
-        for song in reversed(all_songs):
-            print(song.artist," - ", song.title,": ",song.play_count)
+        print('Top 100 Songs:')
+        count = len(all_songs[:100])
+        for song in reversed(all_songs[:100]):
+            print("#",str(count),": ",song.artist," - ", song.title," (",str(song.play_count)," plays)", sep='')
+            count -= 1
+
+
+        print(" ")
+        print("Top 10 Artists:")
+        count = len(all_artists[:10])
+        for artist in reversed(all_artists[:10]):
+            seconds = artist.total_duration / 1000
+            hours = 0
+            minutes = 0
+            while seconds >= 3600:
+                hours += 1
+                seconds -= 3600
+            
+            while seconds >= 60:
+                minutes += 1
+                seconds -= 60
+            print("#",str(count),": ",artist.name," - ", str(hours)," hours, ",str(minutes)," minutes", sep='')
+            count -= 1
+        
+        print(" ")
 
 
     ## try making a playlist ##
@@ -150,7 +204,7 @@ def main():
         print("made playlist: ",PLAYLIST_NAME)
 
     print("done")
-    print("found ",len(history)," plays in the given period")
+    print("found ",len(history)," songs played in the given period",  sep='')
     return
 
 if __name__ == "__main__":

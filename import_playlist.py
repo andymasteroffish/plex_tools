@@ -29,6 +29,8 @@ def main():
 
     USE_EXACT = False #if true, all fields must exactly match. Typically should only be used if you got the list from your own library
 
+    PRINT_MISSING = False   #if true, a playlist with just the items not found gets written to the console
+
     #look at arguments
     if (len(sys.argv) >= 1):
         i=1
@@ -58,6 +60,10 @@ def main():
             #exact match
             if arg == '-exact' or arg == '-e':
                 USE_EXACT = True
+
+            #print missing songs
+            if arg == '-missing' or arg == '-m':
+                PRINT_MISSING = True
 
             #advance arguments
             i += 1
@@ -170,6 +176,12 @@ def main():
     
     # create a new playlist
     music.createPlaylist(PLAYLIST_NAME,items_to_add,False)
+
+    if PRINT_MISSING:
+        print("")
+        print("missing:")
+        for missing in missing_items:
+            print(missing[0],SEPARATOR,missing[1],SEPARATOR,missing[2])
 
     return
 
