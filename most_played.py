@@ -195,13 +195,14 @@ def main():
 
         playlist_songs = []
         for song in trim_list:
-            if PRINT_INFO:
-                print(song.artist," - ", song.title,": ",song.play_count)
+            # if PRINT_INFO:
+            #     print(song.artist," - ", song.title,": ",song.play_count)
             playlist_songs.append(song.raw_info)
 
         #create the playlist
         music.createPlaylist(PLAYLIST_NAME,playlist_songs,False)
         print("made playlist: ",PLAYLIST_NAME)
+        print(" ")
 
     print("done")
     print("found ",len(history)," songs played in the given period",  sep='')
