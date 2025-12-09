@@ -31,10 +31,10 @@ class SongInfo:
         self.play_count = 1
 
 class ArtistInfo:
-    def __init__(self, name):
+    def __init__(self, name, starting_duration):
         self.name = name
         self.play_count = 0
-        self.total_duration = 0
+        self.total_duration = starting_duration
 
 
 def main():
@@ -118,28 +118,43 @@ def main():
     print("tallying... (this might take a while)")
     #check each item in the history
     for item in history:
+        #print("--item--")
+        #print(f"{item.grandparentTitle} - {item.title} - {item.duration}")
+        
         # check if there is a match in our list
         match_found = False
         for song in all_songs:
             if song.id == item.ratingKey:
                 song.play_count += 1
+                item.duration = song.duration
                 match_found = True
 
         #make a new entry if there were no matches
         if match_found == False:
+            #print(" new song!")
+            full_item = plex.fetchItem(item.key)
+            item.duration = full_item.duration
+            #print(f" DURATION: {item.duration}")
             all_songs.append( SongInfo(item.ratingKey, item.title, item.parentTitle, item.grandparentTitle, item.duration, item))
             playlist_test.append(item)
+            
+            #print(vars(item))      #prints all fields and values
+
 
         #check for the artist
         artist_found = False
         for artist in all_artists:
+            #print(f"  artist check: {artist.name}")
             if artist.name == item.grandparentTitle:
+                #print(f"   found an artist match. duration: {type(item.duration)}")
                 #sometimes duration is a bad value. we want to skip anything that is not an int
                 if type(item.duration) == type(1):
                     #print("   add to artist ",item.grandparentTitle)
                     artist.play_count += 1
                     artist.total_duration += item.duration
-                    artist_found = True
+                    #print("   test song: ",item.title,"   duration: ",item.duration, sep='')
+
+                artist_found = True
                 # else:
                 #     print("  no duraiton value for ",item.title)
                 
@@ -147,7 +162,7 @@ def main():
         #make a new entry if we did not find the artist
         if artist_found == False:
             #print("create artist ",item.grandparentTitle)
-            all_artists.append( ArtistInfo(item.grandparentTitle))
+            all_artists.append( ArtistInfo(item.grandparentTitle, item.duration))
 
     print("sorting...")
 
@@ -180,7 +195,9 @@ def main():
             while seconds >= 60:
                 minutes += 1
                 seconds -= 60
+                
             print("#",str(count),": ",artist.name," - ", str(hours)," hours, ",str(minutes)," minutes", sep='')
+            #print(f"  total duration: {artist.total_duration}")
             count -= 1
         
         print(" ")
